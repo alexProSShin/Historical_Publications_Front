@@ -20,8 +20,16 @@
 
 1. [Фронтенд](https://github.com/alexProSShin/Historical_Publications_Front)
 2. [Бэкенд](https://github.com/alexProSShin/Historical_Publications_Back)
-3. [GitHub Pages](https://github.com/alexProSShin/Historical_Publications_Front/deployments/github-pages)
+3. [GitHub Pages](https://alexprosshin.github.io/Historical_Publications_Front/)
 4. [РПЗ](https://github.com/alexProSShin/Historical_Publications_documentation)
+
+### 🌿 Ветки фронтенда
+
+- **`main`**: Пустая ветка, содержащая только README.
+- **`SPA`**: Реализация приложения в формате Single Page Application с моковыми данными.
+- **`PAGES`**: Ветка для деплоя на GitHub Pages. Реализована с использованием Redux и включает десктопное приложение.
+- **`WEB`**: Готовый пользовательский интерфейс с поддержкой ролей и авторизацией.
+- **`MODERATOR`**: Интерфейс модератора для управления публикациями и пользователями.
 
 ### 📖 Инструкция по запуску фронтенда
 
