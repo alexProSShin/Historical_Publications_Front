@@ -9,6 +9,7 @@ import { eventsMock } from "@/core/mock/events";
 import { Container } from "react-bootstrap";
 import { Portal } from "@/components/Portal";
 import { BreadCrumbs } from "@/components/Breadcrubs/BreadCrumbs";
+import searchIcon from "@assets/search.svg";
 
 export const EventsPage = () => {
   const [events, setEvents] = useState<HistoricalEvent[]>([]);
@@ -51,11 +52,7 @@ export const EventsPage = () => {
       <div className="events_page_search__block">
         <form onSubmit={handleSubmit} method="GET">
           <button className="icon-btn" type="submit">
-            <img
-              src="src/assets/search.svg"
-              alt="Поиск"
-              className="search-icon"
-            />
+            <img src={searchIcon} alt="Поиск" className="search-icon" />
           </button>
           <input
             className="events_page_search__input"

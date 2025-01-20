@@ -4,6 +4,7 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "/Historical_Publications_Front/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

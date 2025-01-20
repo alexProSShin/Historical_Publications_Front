@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createHashRouter } from "react-router-dom";
 
 import { EventPage } from "@/pages/EventPage/EventPage";
 import { HomePage } from "@/pages/HomePage/HomePage";
@@ -27,7 +27,7 @@ export enum RoutesEnum {
   /* PublicationById = "/publication/:id", */
 }
 
-export const appRouter = createBrowserRouter([
+export const appRouter = createHashRouter([
   {
     path: "/",
     element: <RootLayout />,
