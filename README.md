@@ -1,1 +1,3 @@
-# Historical_Publications_Front
+npm i
+
+npm run dev

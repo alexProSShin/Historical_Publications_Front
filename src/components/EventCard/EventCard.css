@@ -1,0 +1,37 @@
+/* card */
+.event_card {
+  height: 100%;
+  padding: 60px 30px 30px 30px;
+  display: grid;
+  justify-items: center;
+  grid-template-rows: repeat(4, auto) 1fr;
+}
+.event_card_href {
+  all: unset;
+  display: contents;
+}
+.event_card_image {
+  transition: 0.3s;
+  cursor: pointer;
+}
+.event_card_href:hover .event_card_image {
+  background-color: var(--clr-primary);
+}
+.event_card__caption {
+  margin-top: 12px;
+  text-align: center;
+  color: var(--clr-disabled);
+}
+.event_card__title {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.event_card__description {
+  margin-bottom: 48px;
+  text-align: center;
+  color: var(--clr-disabled);
+}
+.event_card__button {
+  align-self: flex-end;
+}

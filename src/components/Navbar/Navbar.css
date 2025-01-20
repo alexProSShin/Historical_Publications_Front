@@ -1,0 +1,52 @@
+/* my_navbar */
+.my_navbar {
+  position: relative;
+  height: 60px;
+  padding-inline: 23px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--clr-primary);
+  color: white;
+}
+.my_navbar__logo-href {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+}
+.my_navbar__logo {
+  font-family: "PlayfairDisplay";
+
+  font-style: normal;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 48px;
+}
+.my_navbar__logo-href:hover {
+  opacity: 0.8;
+}
+
+/* .my_navbar__breadcrumbs_block {
+  position: absolute;
+  bottom: 0;
+  transform: translateY(100%);
+} */
+
+/* Счетчик событий */
+.event-count {
+  position: absolute;
+  bottom: -10px;
+  right: 0;
+  background-color: black;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 50%;
+  aspect-ratio: 1;
+  padding: 2px 5px;
+  min-width: 20px;
+  text-align: center;
+  line-height: 1;
+  transform: translate(50%, -50%);
+}

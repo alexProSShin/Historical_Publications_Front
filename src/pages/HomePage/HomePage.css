@@ -1,0 +1,12 @@
+.main_page {
+  padding: 60px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.main_page_subinfo p:first-child {
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
