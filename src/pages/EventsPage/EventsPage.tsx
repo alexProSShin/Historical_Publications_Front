@@ -1,7 +1,12 @@
 import { EventCard } from "@/components/EventCard/EventCard";
 
 import "./EventsPage.css";
-import { FormEventHandler, useEffect, useState } from "react";
+import {
+  ChangeEventHandler,
+  FormEventHandler,
+  useEffect,
+  useState,
+} from "react";
 
 import { HistoricalEvent } from "@/core/types/models.types";
 import { getEvents } from "@/core/api/events.api";
@@ -10,9 +15,22 @@ import { Container } from "react-bootstrap";
 import { Portal } from "@/components/Portal";
 import { BreadCrumbs } from "@/components/Breadcrubs/BreadCrumbs";
 import searchIcon from "@assets/search.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { saveEventTitleFilter } from "@/core/slices/app.slice";
+import { RootState } from "@/core/store/store";
 
 export const EventsPage = () => {
   const [events, setEvents] = useState<HistoricalEvent[]>([]);
+
+  const eventTitleFilter = useSelector(
+    (state: RootState) => state.app.eventTitleFilter
+  );
+  const dispatch = useDispatch();
+
+  const handleInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const value = event.target.value;
+    dispatch(saveEventTitleFilter(value));
+  };
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
@@ -34,7 +52,7 @@ export const EventsPage = () => {
   };
 
   useEffect(() => {
-    getEvents({})
+    getEvents({ title: eventTitleFilter })
       .then((data) => {
         setEvents(data.historical_events);
         console.log(data);
@@ -56,6 +74,8 @@ export const EventsPage = () => {
           </button>
           <input
             className="events_page_search__input"
+            onChange={handleInputChange}
+            value={eventTitleFilter}
             name="title"
             placeholder="Найти место, событие или личность"
           />
