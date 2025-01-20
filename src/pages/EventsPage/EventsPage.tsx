@@ -58,7 +58,10 @@ export const EventsPage = () => {
         console.log(data);
       })
       .catch(() => {
-        setEvents(eventsMock.historical_events);
+        const filteredEvents = eventsMock.historical_events.filter((event) =>
+          event.title.toLowerCase().startsWith(eventTitleFilter.toLowerCase())
+        );
+        setEvents(filteredEvents);
       }); // mock данные
   }, []);
 
