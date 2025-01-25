@@ -3,20 +3,22 @@ import { getRoute, RoutesEnum } from "@/router";
 import { Link } from "react-router-dom";
 
 import "./HomePage.css";
+import { BreadCrumbs } from "@/components/Breadcrubs/BreadCrumbs";
 
 export const HomePage = () => {
   console.log("Home Page rendered");
 
   return (
     <div className="main_page">
+      <BreadCrumbs crumbs={[]} />
       <h1 className="heading text-center">
         Добро пожаловать в Историус – ваше пространство для создания и
         сохранения историй!
       </h1>
-      <p className="text-center">
-        Создавайте публикации, делитесь значимыми событиями и сохраняйте
-        культурное наследие.
-      </p>
+
+      <Link to={getRoute(RoutesEnum.Events)}>
+        <Button>К событиям</Button>
+      </Link>
 
       <div className="main_page_subinfo">
         <p className="text-center">Создавайте публикации с глубоким смыслом</p>
@@ -43,10 +45,6 @@ export const HomePage = () => {
           частью глобальной исторической картины.
         </p>
       </div>
-
-      <Link to={getRoute(RoutesEnum.Events)}>
-        <Button>К событиям</Button>
-      </Link>
     </div>
   );
 };

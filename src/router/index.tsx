@@ -5,6 +5,13 @@ import { HomePage } from "@/pages/HomePage/HomePage";
 import { NotFoundPage } from "@/pages/NotFoundPage/NotFoundPage";
 import { RootLayout } from "@/components/RootLayout/RootLayout";
 import { EventsPage } from "@/pages/EventsPage/EventsPage";
+import { LoginPage } from "@/pages/LoginPage/LoginPage";
+import { ProtectedRoute } from "./ProtectedRoute";
+import { RolesEnum } from "@/types/auth.types";
+import { PublicationPage } from "@/pages/PublicationPage/PublicationPage";
+import { PublicationsPage } from "@/pages/PublicationsPage/PublicationsPage";
+import { RegisterPage } from "@/pages/RegisterPage/RegisterPage";
+import { UserPage } from "@/pages/UserPage/UserPage";
 
 export const getRoute = (
   pathTemplate: string,
@@ -24,7 +31,11 @@ export enum RoutesEnum {
   Home = "/",
   Events = "/events",
   EventById = "/events/:id",
-  /* PublicationById = "/publication/:id", */
+  Login = "/login",
+  Register = "/register",
+  PublicationById = "/publications/:id",
+  Publications = "/publications",
+  User = "/user",
 }
 
 export const appRouter = createHashRouter([
@@ -33,16 +44,22 @@ export const appRouter = createHashRouter([
     element: <RootLayout />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: RoutesEnum.Register, element: <RegisterPage /> },
+      { path: RoutesEnum.Login, element: <LoginPage /> },
       { path: RoutesEnum.EventById, element: <EventPage /> },
       { path: RoutesEnum.Events, element: <EventsPage /> },
-      /* {
-        path: RoutesEnum.PublicationById,
+      {
         element: (
-          <ProtectedRoute requiredRoles={[RolesEnum.Admin]}>
-            <PublicationsPage />
-          </ProtectedRoute>
+          <ProtectedRoute
+            requiredRoles={[RolesEnum.User, RolesEnum.Moderator]}
+          />
         ),
-      }, */
+        children: [
+          { path: RoutesEnum.PublicationById, element: <PublicationPage /> },
+          { path: RoutesEnum.Publications, element: <PublicationsPage /> },
+          { path: RoutesEnum.User, element: <UserPage /> },
+        ],
+      },
     ],
   },
   { path: "*", element: <NotFoundPage /> },

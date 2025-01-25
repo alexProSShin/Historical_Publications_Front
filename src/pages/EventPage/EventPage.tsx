@@ -1,34 +1,27 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { HistoricalEvent } from "@/core/types/models.types";
 import { getEventById } from "@/core/api/events.api";
-import { eventsMock } from "@/core/mock/events";
+
 import { Container } from "react-bootstrap";
-import { Portal } from "@/components/Portal";
+
 import { BreadCrumbs } from "@/components/Breadcrubs/BreadCrumbs";
 import { RoutesEnum } from "@/router";
 import defaultImage from "@/assets/defaultImage.webp";
 import "./EventPage.css";
+import { ModelsHistoricalEvent } from "@/core/api/Api";
 
 export const EventPage = () => {
   console.log("Event Page rendered");
 
   const { id } = useParams();
 
-  const [eventData, setEventData] = useState<HistoricalEvent>();
+  const [eventData, setEventData] = useState<ModelsHistoricalEvent>();
 
   useEffect(() => {
     if (id) {
-      getEventById({ eventID: id })
-        .then((data) => {
-          setEventData(data);
-        })
-        .catch(() => {
-          const event = eventsMock.historical_events.find(
-            (event) => event.id === Number(id)
-          );
-          setEventData(event);
-        });
+      getEventById(+id).then((data) => {
+        setEventData(data);
+      });
     }
   }, [id]);
 
@@ -42,14 +35,13 @@ export const EventPage = () => {
 
   return (
     <div className="event_page">
-      <Portal element={document.getElementById("bread-portal")}>
-        <BreadCrumbs
-          crumbs={[
-            { label: "События", path: RoutesEnum.Events },
-            { label: eventData.title ?? "Неизвестно" },
-          ]}
-        />
-      </Portal>
+      <BreadCrumbs
+        crumbs={[
+          { label: "События", path: RoutesEnum.Events },
+          { label: eventData.title ?? "Неизвестно" },
+        ]}
+      />
+
       <div className="event_page__head">
         <div className="event_page__head__image_block">
           <img

@@ -8,67 +8,86 @@ import {
   useState,
 } from "react";
 
-import { HistoricalEvent } from "@/core/types/models.types";
-import { getEvents } from "@/core/api/events.api";
-import { eventsMock } from "@/core/mock/events";
+import { addEventToPublication, getEvents } from "@/core/api/events.api";
 import { Container } from "react-bootstrap";
-import { Portal } from "@/components/Portal";
 import { BreadCrumbs } from "@/components/Breadcrubs/BreadCrumbs";
 import searchIcon from "@assets/search.svg";
-import { useDispatch, useSelector } from "react-redux";
-import { saveEventTitleFilter } from "@/core/slices/app.slice";
-import { RootState } from "@/core/store/store";
+import {
+  changePublicationData,
+  saveEventTitleFilter,
+} from "@/core/store/app.slice";
+import { useAppDispatch, useAppSelector } from "@/core/store/store";
+import { ModelsHistoricalEvent } from "@/core/api/Api";
 
 export const EventsPage = () => {
-  const [events, setEvents] = useState<HistoricalEvent[]>([]);
+  const dispatch = useAppDispatch();
 
-  const eventTitleFilter = useSelector(
-    (state: RootState) => state.app.eventTitleFilter
+  const [events, setEvents] = useState<ModelsHistoricalEvent[]>([]);
+
+  const eventTitleFilter = useAppSelector(
+    (state) => state.app.eventTitleFilter
   );
-  const dispatch = useDispatch();
+
+  /* card */
+
+  const handleAddCardClick = (id: number) => {
+    addEventToPublication(id).then(() => {
+      getEvents(eventTitleFilter).then((data) => {
+        setEvents(data.historical_events || []);
+        dispatch(
+          changePublicationData({
+            publicationId: data.publications_id,
+            eventsCount: data.events_count,
+          })
+        );
+      });
+    });
+  };
+
+  /* search */
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const value = event.target.value;
     dispatch(saveEventTitleFilter(value));
   };
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+  const handleSearchSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
     const title = formData.get("title") as string;
 
-    getEvents({ title })
-      .then((data) => {
-        setEvents(data.historical_events);
-        console.log(data);
-      })
-      .catch(() => {
-        const filteredEvents = eventsMock.historical_events.filter((event) =>
-          event.title.toLowerCase().startsWith(title.toLowerCase())
-        );
-        setEvents(filteredEvents);
-      }); // mock данные
+    getEvents(title).then((data) => {
+      setEvents(data.historical_events || []);
+      dispatch(
+        changePublicationData({
+          publicationId: data.publications_id,
+          eventsCount: data.events_count,
+        })
+      );
+    });
   };
 
+  /* initial */
   useEffect(() => {
-    getEvents({ title: eventTitleFilter })
-      .then((data) => {
-        setEvents(data.historical_events);
-        console.log(data);
-      })
-      .catch(() => {
-        setEvents(eventsMock.historical_events);
-      }); // mock данные
+    getEvents(eventTitleFilter).then((data) => {
+      setEvents(data.historical_events || []);
+      dispatch(
+        changePublicationData({
+          publicationId: data.publications_id,
+          eventsCount: data.events_count,
+        })
+      );
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
-      <Portal element={document.getElementById("bread-portal")}>
-        <BreadCrumbs crumbs={[{ label: "События" }]} />
-      </Portal>
+      <BreadCrumbs crumbs={[{ label: "События" }]} />
+
       <div className="events_page_search__block">
-        <form onSubmit={handleSubmit} method="GET">
+        <form onSubmit={handleSearchSubmit} method="GET">
           <button className="icon-btn" type="submit">
             <img src={searchIcon} alt="Поиск" className="search-icon" />
           </button>
@@ -85,7 +104,11 @@ export const EventsPage = () => {
         <div className="events_page_grid-container">
           {events.map((event, index) => (
             <div key={index} className="events_page_grid-item">
-              <EventCard eventData={event} />
+              <EventCard
+                eventData={event}
+                onClick={() => handleAddCardClick(event.id)}
+                disabled={false}
+              />
             </div>
           ))}
         </div>

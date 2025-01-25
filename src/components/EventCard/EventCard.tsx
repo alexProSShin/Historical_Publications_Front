@@ -1,14 +1,19 @@
 import "./EventCard.css";
-import { HistoricalEvent } from "@/core/types/models.types";
 import defaultImage from "@/assets/defaultImage.webp";
 import { Link } from "react-router-dom";
 import { getRoute, RoutesEnum } from "@/router";
+import { ModelsHistoricalEvent } from "@/core/api/Api";
+import { useAuthState } from "@/core/store/useAuthState";
 
 interface IEventCardProps {
-  eventData: HistoricalEvent;
+  eventData: ModelsHistoricalEvent;
+  onClick: () => void;
+  disabled: boolean;
 }
 
-export const EventCard = ({ eventData }: IEventCardProps) => {
+export const EventCard = ({ eventData, onClick }: IEventCardProps) => {
+  const { IS_GUEST } = useAuthState();
+
   return (
     <div className="event_card">
       <Link
@@ -25,9 +30,13 @@ export const EventCard = ({ eventData }: IEventCardProps) => {
       <p className="heading event_card__title">{eventData.title}</p>
       <p className="event_card__description">{eventData.description}</p>
 
-      {/*  <div className="event_card__button">
-        <Button>Добавит</Button>
-      </div> */}
+      {!IS_GUEST && (
+        <div className="event_card__button">
+          <button onClick={onClick} className="button-primary">
+            Добавит
+          </button>
+        </div>
+      )}
     </div>
   );
 };

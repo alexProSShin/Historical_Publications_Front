@@ -1,0 +1,6 @@
+.publications_page .publications_page_loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 200px;
+}
