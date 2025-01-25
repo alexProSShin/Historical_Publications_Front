@@ -73,6 +73,7 @@ export interface ModelsHistoricalEvent {
   status: ModelsEventStatus;
   /** Название события */
   title: string;
+  priority?: number
 }
 
 export interface ModelsLoginResponseDTO {

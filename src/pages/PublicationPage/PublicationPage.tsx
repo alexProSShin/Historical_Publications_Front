@@ -227,6 +227,7 @@ export const PublicationPage = () => {
                       className="publication_page__event__input"
                       id={"pub-events-input" + event.id}
                       min={1}
+                      defaultValue={event.priority}
                       max={99}
                       required
                       type="number"
