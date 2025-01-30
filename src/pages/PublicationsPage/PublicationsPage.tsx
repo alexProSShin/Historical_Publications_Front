@@ -64,7 +64,7 @@ export const PublicationsPage = () => {
   }, [selectedEndDate, selectedStartDate, selectedStatus]);
 
   /* pooling */
-  /* useEffect(() => {
+  useEffect(() => {
     const longPooling = setInterval(
       () =>
         loadHistoryHandler({
@@ -80,7 +80,7 @@ export const PublicationsPage = () => {
     selectedStartDate,
     selectedStatus,
     searchPublicationName,
-  ]); */
+  ]);
 
   const loadHistoryHandler = (params: {
     status?: string;
