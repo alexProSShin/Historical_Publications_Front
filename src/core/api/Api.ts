@@ -73,6 +73,7 @@ export interface ModelsHistoricalEvent {
   status: ModelsEventStatus;
   /** Название события */
   title: string;
+  priority?: number
 }
 
 export interface ModelsLoginResponseDTO {
@@ -99,6 +100,7 @@ export interface ModelsPublication {
   title: string;
   trust_score?: number;
   user_id: number;
+  user_name?: string;
 }
 
 export enum ModelsPublicationStatus {
@@ -484,7 +486,7 @@ export class Api<
       params: RequestParams = {}
     ) =>
       this.request<void, RespErrorResponse>({
-        path: `/events/${eventId}/image`,
+        path: `/events/${eventId}`,
         method: "POST",
         body: data,
         secure: true,
@@ -661,8 +663,8 @@ export class Api<
       params: RequestParams = {}
     ) =>
       this.request<ModelsPublication, RespErrorResponse>({
-        path: `/publications/${publicationId}/finalize`,
-        method: "POST",
+        path: `/publications/${publicationId}/finalized`,
+        method: "PUT",
         query: query,
         secure: true,
         type: ContentType.Json,

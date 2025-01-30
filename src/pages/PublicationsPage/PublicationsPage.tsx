@@ -17,9 +17,12 @@ import {
   acceptPublication,
   rejectPublication,
 } from "@/core/api/publications.api";
+import { useAuthState } from "@/core/store/useAuthState";
 
 export const PublicationsPage = () => {
   const dispatch = useAppDispatch();
+
+  const { IS_MODERATOR } = useAuthState();
 
   const [publications, setPublications] = useState<ModelsPublication[]>();
 
@@ -42,12 +45,10 @@ export const PublicationsPage = () => {
   const TIMER_POOL = 1000;
 
   useEffect(() => {
-    if (publications) {
-      if (searchPublicationName) {
-        filterPublications(searchPublicationName, publications);
-      } else {
-        setPublications(prevPublications.current);
-      }
+    if (searchPublicationName && publications) {
+      filterPublications(searchPublicationName, publications);
+    } else {
+      setPublications(prevPublications.current);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchPublicationName]);
@@ -63,7 +64,7 @@ export const PublicationsPage = () => {
   }, [selectedEndDate, selectedStartDate, selectedStatus]);
 
   /* pooling */
-  /*  useEffect(() => {
+  /* useEffect(() => {
     const longPooling = setInterval(
       () =>
         loadHistoryHandler({
@@ -80,7 +81,6 @@ export const PublicationsPage = () => {
     selectedStatus,
     searchPublicationName,
   ]); */
-  /* no pooling */
 
   const loadHistoryHandler = (params: {
     status?: string;
@@ -90,6 +90,7 @@ export const PublicationsPage = () => {
     getPublications(params)
       .then((data) => {
         if (data) {
+          prevPublications.current = data;
           filterPublications(searchPublicationName, data);
         }
         setIsPageLoading(false);
@@ -161,18 +162,18 @@ export const PublicationsPage = () => {
     filterName: string,
     publications: ModelsPublication[]
   ) {
-    if (publications && publications.length) {
+    /* if (publications && publications.length) {
       prevPublications.current = publications;
-    }
+    } */
     const newPublications = publications.filter((publication) =>
-      publication.title.includes(filterName)
+      publication.user_name?.toLowerCase().includes(filterName.toLowerCase())
     );
     setPublications(newPublications);
   }
 
   const tableProps = {
     dataRows: publications,
-    isAdmin: false,
+    isAdmin: IS_MODERATOR,
     completeHandler: updatePublicationStatus,
     buttonLoadingId: buttonLoadingId,
     buttonLoadingStatus: buttonLoadingStatus,
@@ -185,7 +186,7 @@ export const PublicationsPage = () => {
     selectedStartDate: selectedStartDate,
     selectedEndDate: selectedEndDate,
     selectedName: searchPublicationName,
-    isAdmin: false,
+    isAdmin: IS_MODERATOR,
   };
 
   return (

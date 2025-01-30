@@ -1,6 +1,9 @@
 import "./PublicationPage.css";
 import { BreadCrumbs } from "@/components/Breadcrubs/BreadCrumbs";
-import { ModelsGetPublicationDTO } from "@/core/api/Api";
+import {
+  ModelsGetPublicationDTO,
+  ModelsPublicationStatus,
+} from "@/core/api/Api";
 import {
   deleteEventFromPublication,
   updateEventPriority,
@@ -134,7 +137,17 @@ export const PublicationPage = () => {
 
   return (
     <div className="publication_page">
-      <BreadCrumbs crumbs={[{ label: "Публикация" }]} />
+      <BreadCrumbs
+        crumbs={
+          publicationData?.status ===
+          ModelsPublicationStatus.DraftPublicationStatus
+            ? [{ label: "Публикация" }]
+            : [
+                { label: "Публикации", path: RoutesEnum.Publications },
+                { label: publicationData?.title || "" },
+              ]
+        }
+      />
       <input
         className="publication_page__title"
         value={formData.name}
@@ -227,6 +240,7 @@ export const PublicationPage = () => {
                       className="publication_page__event__input"
                       id={"pub-events-input" + event.id}
                       min={1}
+                      defaultValue={event.priority}
                       max={99}
                       required
                       type="number"

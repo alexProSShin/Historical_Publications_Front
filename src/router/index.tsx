@@ -12,6 +12,7 @@ import { PublicationPage } from "@/pages/PublicationPage/PublicationPage";
 import { PublicationsPage } from "@/pages/PublicationsPage/PublicationsPage";
 import { RegisterPage } from "@/pages/RegisterPage/RegisterPage";
 import { UserPage } from "@/pages/UserPage/UserPage";
+import { NewEventPage } from "@/pages/NewEventPage/NewEventPage";
 
 export const getRoute = (
   pathTemplate: string,
@@ -36,6 +37,7 @@ export enum RoutesEnum {
   PublicationById = "/publications/:id",
   Publications = "/publications",
   User = "/user",
+  NewEvent = "/new",
 }
 
 export const appRouter = createHashRouter([
@@ -59,6 +61,10 @@ export const appRouter = createHashRouter([
           { path: RoutesEnum.Publications, element: <PublicationsPage /> },
           { path: RoutesEnum.User, element: <UserPage /> },
         ],
+      },
+      {
+        element: <ProtectedRoute requiredRoles={[RolesEnum.Moderator]} />,
+        children: [{ path: RoutesEnum.NewEvent, element: <NewEventPage /> }],
       },
     ],
   },

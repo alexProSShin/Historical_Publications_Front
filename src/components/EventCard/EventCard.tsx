@@ -33,7 +33,7 @@ export const EventCard = ({ eventData, onClick }: IEventCardProps) => {
       {!IS_GUEST && (
         <div className="event_card__button">
           <button onClick={onClick} className="button-primary">
-            Добавит
+            Добавить
           </button>
         </div>
       )}

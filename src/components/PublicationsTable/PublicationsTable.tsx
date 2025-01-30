@@ -26,7 +26,7 @@ export const PublicationsTable: FC<IPublicationTableProps> = (props) => {
 
   if (!dataRows || !dataRows.length)
     return (
-      <div className="stella_table_empty">
+      <div className="publication_table_empty">
         <h3>Отсутсвуют данные</h3>
       </div>
     );
@@ -35,7 +35,7 @@ export const PublicationsTable: FC<IPublicationTableProps> = (props) => {
     [ModelsPublicationStatus.DraftPublicationStatus]: "",
     [ModelsPublicationStatus.WorkPublicationStatus]: "",
     [ModelsPublicationStatus.RejectedPublicationStatus]: "#e80909",
-    [ModelsPublicationStatus.CompletedPublicationStatus]: "#4eff26",
+    [ModelsPublicationStatus.CompletedPublicationStatus]: "#47b62e",
     [ModelsPublicationStatus.DeletedPublicationStatus]: "#e80909",
   };
 
@@ -59,7 +59,7 @@ export const PublicationsTable: FC<IPublicationTableProps> = (props) => {
     buttonLoadingStatus === ModelsPublicationStatus.CompletedPublicationStatus;
 
   return (
-    <div className="stella_table">
+    <div className="publication_table">
       <table>
         <thead>
           <tr>
@@ -68,72 +68,75 @@ export const PublicationsTable: FC<IPublicationTableProps> = (props) => {
             <th>Дата формирования</th>
             <th>Дата подтверждения</th>
             <th>Статус</th>
-            {isAdmin && <th>Полное имя</th>}
+            {isAdmin && <th>Имя</th>}
             {isAdmin && <th>Действия</th>}
           </tr>
         </thead>
         <tbody>
-          {dataRows.map((row) => (
-            <tr
-              key={row.id}
-              style={{ cursor: isAdmin ? "" : "pointer" }}
-              onClick={() => handleRowClick(row.id)}
-              className={isAdmin ? "no_hover" : ""}
-            >
-              <td>{row.title}</td>
-              <td>{getNormalDateTime(row.creation_date)}</td>
-              <td>{getNormalDateTime(row.formation_date || "")}</td>
-              <td>{getNormalDateTime(row.completion_date || "")}</td>
-              <td style={{ color: getStatusColor(row.status) }}>
-                {row.status}
-              </td>
-              {isAdmin && <td>{row.title || ""}</td>}
-              {/* TODO username */}
-              {isAdmin && completeHandler && (
-                <td className="table_manage_buttons">
-                  <Button
-                    variant="info"
-                    onClick={() =>
-                      navigate(`/publications/${row.id}`, {
-                        state: { prevPage: "/publications" },
-                      })
-                    }
-                  >
-                    Подбробнее
-                  </Button>
-
-                  <Button
-                    variant="success"
-                    onClick={() =>
-                      completeHandler(
-                        row.id,
-                        ModelsPublicationStatus.CompletedPublicationStatus
-                      )
-                    }
-                  >
-                    {(isCompleteButtonLoading && row.id === buttonLoadingId) ||
-                    row.status !== ModelsPublicationStatus.WorkPublicationStatus
-                      ? "Загрузка"
-                      : "Подтвердить"}
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={() =>
-                      completeHandler(
-                        row.id,
-                        ModelsPublicationStatus.RejectedPublicationStatus
-                      )
-                    }
-                  >
-                    {(isCancelButtonLoading && row.id === buttonLoadingId) ||
-                    row.status !== ModelsPublicationStatus.WorkPublicationStatus
-                      ? "Загрузка"
-                      : "Отменить"}
-                  </Button>
+          {dataRows.map((row) => {
+            const isCompleteDisabled =
+              (isCompleteButtonLoading && row.id === buttonLoadingId) ||
+              row.status !== ModelsPublicationStatus.WorkPublicationStatus;
+            const isRejectDisabled =
+              (isCancelButtonLoading && row.id === buttonLoadingId) ||
+              row.status !== ModelsPublicationStatus.WorkPublicationStatus;
+            return (
+              <tr
+                key={row.id}
+                style={{ cursor: isAdmin ? "" : "pointer" }}
+                onClick={() => handleRowClick(row.id)}
+                className={isAdmin ? "no_hover" : ""}
+              >
+                <td>{row.title}</td>
+                <td>{getNormalDateTime(row.creation_date)}</td>
+                <td>{getNormalDateTime(row.formation_date || "")}</td>
+                <td>{getNormalDateTime(row.completion_date || "")}</td>
+                <td style={{ color: getStatusColor(row.status) }}>
+                  {row.status}
                 </td>
-              )}
-            </tr>
-          ))}
+                {isAdmin && <td>{row.user_name || ""}</td>}
+                {isAdmin && completeHandler && (
+                  <td className="table_manage_buttons">
+                    <Button
+                      variant="info"
+                      onClick={() =>
+                        navigate(`/publications/${row.id}`, {
+                          state: { prevPage: "/publications" },
+                        })
+                      }
+                    >
+                      Подбробнее
+                    </Button>
+
+                    <Button
+                      variant={isCompleteDisabled ? "secondary" : "success"}
+                      onClick={() =>
+                        completeHandler(
+                          row.id,
+                          ModelsPublicationStatus.CompletedPublicationStatus
+                        )
+                      }
+                      disabled={isCompleteDisabled}
+                    >
+                      Подтвердить
+                    </Button>
+                    <Button
+                      variant={isCompleteDisabled ? "secondary" : "danger"}
+                      onClick={() =>
+                        completeHandler(
+                          row.id,
+                          ModelsPublicationStatus.RejectedPublicationStatus
+                        )
+                      }
+                      disabled={isRejectDisabled}
+                    >
+                      Отменить
+                    </Button>
+                  </td>
+                )}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

@@ -64,9 +64,8 @@ export const Filters: FC<IFiltersProps> = (props) => {
       </div>
       {isAdmin && (
         <div className="item">
-          <p>Название:</p>
+          <p>Автор:</p>
           <input
-            style={{ backgroundColor: "#292929" }}
             type="text"
             name="constName"
             value={selectedName}

@@ -8,8 +8,12 @@ import {
   useState,
 } from "react";
 
-import { addEventToPublication, getEvents } from "@/core/api/events.api";
-import { Container } from "react-bootstrap";
+import {
+  addEventToPublication,
+  deleteEventById,
+  getEvents,
+} from "@/core/api/events.api";
+import { Button, Container } from "react-bootstrap";
 import { BreadCrumbs } from "@/components/Breadcrubs/BreadCrumbs";
 import searchIcon from "@assets/search.svg";
 import {
@@ -18,17 +22,24 @@ import {
 } from "@/core/store/app.slice";
 import { useAppDispatch, useAppSelector } from "@/core/store/store";
 import { ModelsHistoricalEvent } from "@/core/api/Api";
+import { useAuthState } from "@/core/store/useAuthState";
+import { EventsTable } from "@/components/EventsTable/EventsTable";
+import { Link } from "react-router-dom";
+import { RoutesEnum } from "@/router";
 
 export const EventsPage = () => {
   const dispatch = useAppDispatch();
 
+  const { IS_MODERATOR } = useAuthState();
+
   const [events, setEvents] = useState<ModelsHistoricalEvent[]>([]);
+  const [buttonLoadingId, setButtonLoadingId] = useState(-1);
 
   const eventTitleFilter = useAppSelector(
     (state) => state.app.eventTitleFilter
   );
 
-  /* card */
+  /* event */
 
   const handleAddCardClick = (id: number) => {
     addEventToPublication(id).then(() => {
@@ -42,6 +53,26 @@ export const EventsPage = () => {
         );
       });
     });
+  };
+
+  const handleEventDeleted = (id: number) => {
+    setButtonLoadingId(id);
+
+    deleteEventById(id)
+      .then(() => {
+        getEvents(eventTitleFilter).then((data) => {
+          setEvents(data.historical_events || []);
+          dispatch(
+            changePublicationData({
+              publicationId: data.publications_id,
+              eventsCount: data.events_count,
+            })
+          );
+        });
+      })
+      .finally(() => {
+        setButtonLoadingId(-1);
+      });
   };
 
   /* search */
@@ -82,7 +113,39 @@ export const EventsPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
+  const eventsTableProps = {
+    dataRows: events,
+    deleteHandler: handleEventDeleted,
+    buttonLoadingId: buttonLoadingId,
+    addHandler: handleAddCardClick,
+  };
+
+  return IS_MODERATOR ? (
+    <>
+      <BreadCrumbs crumbs={[{ label: "События" }]} />
+      <div className="events_page_search__block">
+        <form onSubmit={handleSearchSubmit} method="GET">
+          <button className="icon-btn" type="submit">
+            <img src={searchIcon} alt="Поиск" className="search-icon" />
+          </button>
+          <input
+            className="events_page_search__input"
+            onChange={handleInputChange}
+            value={eventTitleFilter}
+            name="title"
+            placeholder="Найти место, событие или личность"
+          />
+        </form>
+      </div>
+      <EventsTable {...eventsTableProps} />
+
+      <Container className="d-flex mt-5 justify-content-center">
+        <Link to={RoutesEnum.NewEvent}>
+          <Button>Создать</Button>
+        </Link>
+      </Container>
+    </>
+  ) : (
     <>
       <BreadCrumbs crumbs={[{ label: "События" }]} />
 
